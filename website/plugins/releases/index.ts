@@ -19,11 +19,12 @@ import {generateHighlights, generateReleases} from './releaseUtils';
 
 const DEFAULT_OPTIONS: PluginOptions = {
   path: 'releases', // Path to data on filesystem, relative to site dir.
-  routeBasePath: 'releases-new', // URL Route.
+  routeBasePath: 'releases', // URL Route.
   include: ['*.md', '*.mdx'], // Extensions to include.
   releaseComponent: '@theme/ReleasePage',
   releaseDownloadComponent: '@theme/ReleaseDownloadPage',
   releaseHighlightComponent: '@theme/ReleaseHighlightPage',
+  releaseHighlightsListComponent: '@theme/ReleaseHighlightsListPage',
   releaseListComponent: '@theme/ReleaseListPage',
   remarkPlugins: [],
   rehypePlugins: [],
@@ -134,6 +135,7 @@ export default function pluginContentRelease(
         releaseComponent,
         releaseDownloadComponent,
         releaseHighlightComponent,
+        releaseHighlightsListComponent,
         releaseListComponent,
       } = options;
 
@@ -228,6 +230,33 @@ export default function pluginContentRelease(
           });
         }),
       );
+
+      //
+      // Release highlights page
+      //
+
+      let highlightsPath = normalizeUrl([basePageUrl, 'highlights']);
+
+      addRoute({
+        path: highlightsPath,
+        component: releaseHighlightsListComponent,
+        exact: true,
+        modules: {
+          items: releaseHighlights.map(releaseHighlight => {
+            const metadata = releaseHighlight.metadata;
+            // To tell routes.js this is an import and not a nested object to recurse.
+            return {
+              content: {
+                __import: true,
+                path: metadata.source,
+                query: {
+                  truncated: true,
+                },
+              },
+            };
+          }),
+        },
+      });
     },
 
     configureWebpack(

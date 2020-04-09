@@ -9,6 +9,7 @@ export interface PluginOptions {
   releaseComponent: string;
   releaseDownloadComponent: string;
   releaseHighlightComponent: string;
+  releaseHighlightsListComponent: string;
   releaseListComponent: string;
   remarkPlugins: string[];
   rehypePlugins: string[];

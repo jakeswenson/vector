@@ -8,11 +8,12 @@ const utils_1 = require("@docusaurus/utils");
 const releaseUtils_1 = require("./releaseUtils");
 const DEFAULT_OPTIONS = {
     path: 'releases',
-    routeBasePath: 'releases-new',
+    routeBasePath: 'releases',
     include: ['*.md', '*.mdx'],
     releaseComponent: '@theme/ReleasePage',
     releaseDownloadComponent: '@theme/ReleaseDownloadPage',
     releaseHighlightComponent: '@theme/ReleaseHighlightPage',
+    releaseHighlightsListComponent: '@theme/ReleaseHighlightsListPage',
     releaseListComponent: '@theme/ReleaseListPage',
     remarkPlugins: [],
     rehypePlugins: [],
@@ -91,7 +92,7 @@ function pluginContentRelease(context, opts) {
             //
             // Prepare
             //
-            const { releaseComponent, releaseDownloadComponent, releaseHighlightComponent, releaseListComponent, } = options;
+            const { releaseComponent, releaseDownloadComponent, releaseHighlightComponent, releaseHighlightsListComponent, releaseListComponent, } = options;
             const { addRoute, createData } = actions;
             const { releases, releaseHighlights } = releaseContents;
             const { routeBasePath } = options;
@@ -150,7 +151,6 @@ function pluginContentRelease(context, opts) {
             //
             // Release highlight pages
             //
-            console.log(releaseHighlights);
             await Promise.all(releaseHighlights.map(async (releaseHighlight) => {
                 const { metadata } = releaseHighlight;
                 await createData(
@@ -166,6 +166,30 @@ function pluginContentRelease(context, opts) {
                     },
                 });
             }));
+            //
+            // Release highlights page
+            //
+            let highlightsPath = utils_1.normalizeUrl([basePageUrl, 'highlights']);
+            addRoute({
+                path: highlightsPath,
+                component: releaseHighlightsListComponent,
+                exact: true,
+                modules: {
+                    items: releaseHighlights.map(releaseHighlight => {
+                        const metadata = releaseHighlight.metadata;
+                        // To tell routes.js this is an import and not a nested object to recurse.
+                        return {
+                            content: {
+                                __import: true,
+                                path: metadata.source,
+                                query: {
+                                    truncated: true,
+                                },
+                            },
+                        };
+                    }),
+                },
+            });
         },
         configureWebpack(_config, isServer, { getBabelLoader, getCacheLoader }) {
             const { rehypePlugins, remarkPlugins, truncateMarker } = options;

@@ -62,6 +62,11 @@ function navLinkAttributes(label, right) {
       attrs.icon = 'github';
       return attrs;
 
+    case 'release highlights':
+      attrs.hideText = true;
+      attrs.icon = 'gift';
+      return attrs;
+
     default:
       return attrs;
   };
@@ -73,7 +78,13 @@ function NavLink({href, hideIcon, label, onClick, position, right, to}) {
 
   return (
     <Link
-      className={classnames("navbar__item navbar__link", attributes.className)}
+      className={classnames(
+        "navbar__item navbar__link",
+        attributes.className,
+        {
+          'navbar__item__icon_only': attributes.hideText
+        }
+      )}
       title={attributes.hideText ? label : null}
       onClick={onClick}
       {...(href

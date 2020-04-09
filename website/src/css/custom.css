@@ -1409,7 +1409,11 @@ ol li.list--li--pink {
   padding: var(--ifm-navbar-padding-vertical) var(--ifm-navbar-padding-horizontal);;
 }
 
-@media (max-width: 1050px) {
+@media (max-width: 1100px) {
+  .navbar .navbar__item.navbar__item__icon_only {
+    padding-right: 0;
+  }
+
   .navbar .navbar__search .navbar__search-input {
     width: 10em;
   }
