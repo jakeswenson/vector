@@ -123,8 +123,6 @@ function Values({values}) {
 
   values.forEach(value => elements.push(<Value value={value} />));
 
-  console.log(elements)
-
   return elements;
 }
 
